@@ -1,6 +1,6 @@
 (ns blog.layout
   (:use (compojure.html gen page-helpers form-helpers)
-        (clojure.contrib pprint)
+        (clojure.contrib pprint str-utils)
         (blog config db util)))
 
 (defn preview-div []
@@ -22,8 +22,12 @@
 (defmethod url :default [x]
   (die "Don't know how to make a url out of a " (type x)))
 
+(defn type-link [type]
+  (re-gsub #":" "" (str type)))
+
 (defn link [x]
-  (link-to {:class (str (type x) "-link")}
+  (link-to {:class (str (type-link (type x)) "-link" (:class x))
+	    :style (:style x)}
            (url x)
            (x :title)))
 
@@ -33,12 +37,28 @@
              (cl-format nil "~a Comment~:*~[s~;~:;s~]"
                         (count (post :comments))))))
 
+(defn- calc-cloud [i min max]
+  (+ 7
+  (if (and (> i min) (> max min))
+    (/ (* 23 (- i min)) (- max min))
+    1)))
+
+(defn- tag-cloud [tags]
+  (if ( not (empty? tags))
+  (let [tags-f (frequencies tags)
+	min (reduce min (map #(second %) tags-f))
+	max (reduce max (map #(second %) tags-f))
+	total (reduce + (map #(second %) tags-f))
+	]
+    (map #(assoc (first %) :style (str "font-size:" (calc-cloud (second %) min max)) "px") 
+	 tags-f))))
+
 (defn- nav [admin]
   [:div.navigation
    [:ul "Categories"
     (map #(vector :li (link %)) (all-categories))]
-   [:ul "Tags"
-    (map #(vector :li (link %)) (all-tags))]
+   [:ul "Tags" [:li
+    (map #(vector :span (link %)) (tag-cloud (all-tags)))]]
    [:ul "Meta"
     (comment "TODO"
       [:li (link-to "/archives" "Archives")]
@@ -83,4 +103,5 @@
        "Powered by "
        (link-to "http://clojure.org" "Clojure") " and "
        (link-to "http://github.com/weavejester/compojure" "Compojure") " and "
-       (link-to "http://briancarper.net" "Cows") "."]]]]))
+       (link-to "http://github.com/briancarper/cow-blog" "Cows") " and "
+       (link-to "http://github.com/smartrevolution/clj-gae-datastore" "Google App Engine Datastore") "."]]]]))

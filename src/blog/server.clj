@@ -1,13 +1,18 @@
 (ns blog.server
+  (:gen-class
+    :extends javax.servlet.http.HttpServlet)
   (:use (compojure control)
-        (compojure.server jetty)
         (compojure.http servlet
                         routes
                         helpers
                         session
                         request
                         middleware)
-        (blog util layout pages admin rss)))
+	compojure.html
+        (blog util layout pages admin rss))
+  (:require
+   [appengine.users        :as users]
+   [blog.logger :as log]))
 
 (defn- admin [session]
   (:username session))
@@ -61,6 +66,7 @@
         response))))
 
 (defn with-layout [handler]
+  (log/info "with-layout: " handler)
   (fn [request]
     (when-let [response (handler request)]
       (assoc response
@@ -82,7 +88,7 @@
 (decorate form-routes       with-session)
 (decorate admin-routes      with-layout admin-only with-session)
 (decorate admin-form-routes admin-only with-session)
-(decorate static-routes     with-mimetypes short-circuit)  ; FIXME
+(decorate static-routes     with-mimetypes) ; short-circuit)  ; FIXME?
 
 (defroutes all-routes
   admin-routes
@@ -92,6 +98,4 @@
   static-routes
   error-routes)
 
-(defserver blog-server
-  {:port 8080 :host "localhost"}
-  "/*" (servlet all-routes))
+(defservice (users/wrap-with-user-info all-routes))

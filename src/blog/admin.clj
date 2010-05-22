@@ -2,7 +2,8 @@
   (:use (compojure.html gen form-helpers)
         (compojure.http session helpers)
         (clojure.contrib str-utils)
-        (blog layout config db util)))
+        (blog layout config db util))
+  (:require [blog.logger :as log]))
 
 (defn login-page []
   {:title "Login"
@@ -73,6 +74,7 @@
               (re-split  #"\s*,\s*" tags))})
 
 (defn do-add-post [& args]
+  (log/info "do-add-post" args)
   (add-post (apply post-from-params args))
   [(flash-assoc :message "Post added.")
    (redirect-to "/")])

@@ -1,10 +1,10 @@
 (ns blog.config)
 
-(def SITE-TITLE "A Clojure Blog (\u03bb)")
-(def SITE-URL "http://localhost:8080")
-(def SITE-DESCRIPTION "Some guy's blog about Clojure.")
+(def SITE-TITLE "Cow Clojure Blog")
+(def SITE-URL "http://cowclj.appspot.com")
+(def SITE-DESCRIPTION "A blog about a blog written in Clojure.")
 
-(def PUBLIC-DIR "public")  ;;CS/JS/images live here.  Relative path.
+(def PUBLIC-DIR ".")  ;;CS/JS/images live here.  Relative path.
 
 ;; For now, only a single admin user can exist, and this is where the login details live.
 ;; use blog.admin/generate-user to generate a new user and then put it here.

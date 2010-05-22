@@ -1,3 +1,21 @@
+#cowclj
+
+This version of cow-blog is ported to Google App Engine and uses Datastore instead of Tokyo Cabinet.
+
+A blog about this project running cowclj, can be found here: http://cowclj.appspot.com/
+
+To setup your own blog you have to:
+- change the application name at war/WEB-INF/application-war.xml
+- lein compile
+- appcfg.sh update war
+
+Note: There was a problem with the appengine SDK version 1.3.3, with 1.3.4 it works fine.
+
+The Favicon [publicampo](http://www.favicon.cc/?action=icon&file_id=203081) was created by [cabeto](http://www.favicon.cc/?action=icon_list&user_id=53847).
+
+----
+
+
 # cow-blog
 by [Brian Carper](http://briancarper.net/)
 

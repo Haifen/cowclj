@@ -1,0 +1,6 @@
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+  <application>cowclj</application>
+  <version>a11-suspire</version> <!-- Word of the Day May 22, 2010 http://dictionary.reference.com/wordoftheday/ -->
+  <static-files />
+  <resource-files />
+</appengine-web-app>
