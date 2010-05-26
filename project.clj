@@ -1,6 +1,6 @@
 (defproject cowclj "1.0.2"
   :description "A blog written in Clojure for Google App Engine using Compojure. "
-  :dependencies [[org.clojure/clojure "1.2.0-master-20100518.110252-71"]
+  :dependencies [[org.clojure/clojure "1.2.0-master-SNAPSHOT"] ;"1.2.0-master-20100518.110252-71"]
                  [org.clojure/clojure-contrib "1.2.0-SNAPSHOT"]
 		 ;[leiningen/lein-swank "1.1.0"]
                  [com.google.appengine/appengine-api-1.0-sdk "1.3.2"]

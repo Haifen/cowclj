@@ -23,6 +23,18 @@
   [:blog-id]
 )
 
+(datastore/defentity comment-entity
+  [:id]
+  [:post-id]
+  [:author]
+  [:email]
+  [:url]
+  [:markdown :pre-save types/to-text :post-load types/from-text]
+  [:html :pre-save types/to-text :post-load types/from-text]
+  [:ip]
+  [:date] ;; TODO :pre-save (now)
+)
+
 (defn load-all-tags
   "Loads all tags from the datastore."
   []
@@ -35,7 +47,7 @@
   (query/select (query/where blog-entity ([= :id id]))))
 
 (defn store-post 
-  "Stores all blogs to datastore."
+  "Stores blog to datastore."
   [blog]
   (let [post blog
 	tags (:tags post)]
@@ -64,3 +76,22 @@
 	keys-tags (query/select-only-keys (query/where tag-entity ([= :blog-id id])))]
     (datastore/delete-all! keys-blog)
     (datastore/delete-all! keys-tags)))
+
+(defn load-comments [post-id]
+  (query/select (query/where comment-entity ([= :post-id post-id]))))
+
+(defn store-comment
+  "Stores comment to datastore."
+  [comment]
+  (datastore/store-entities! [(make-comment-entity
+			       :id (:id comment)
+			       :post-id (:post-id comment)
+			       :author (:author comment)
+			       :email (:email comment)
+			       :url (:url comment)
+			       :markdown (:markdown comment)
+			       :html (:html comment)
+			       :ip (:ip comment)
+			       :date (:date comment)
+			       )])
+  comment)

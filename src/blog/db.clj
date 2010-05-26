@@ -32,11 +32,11 @@
         :html (markdown-to-html (post :markdown) false)))
     (die "Invalid post data.  You left something blank:  " post)))
 
-(defn make-comment [post c]
+(defn make-comment [c]
   (with-type :comment
     (assoc c
       :id (uuid)
-      :post-id (post :id)
+;      :post-id (post :id)
       :date (or (c :date) (now))
       :html (markdown-to-html (:markdown c) true))))
 
@@ -159,17 +159,16 @@ to delete the data."
           (all-posts)))
 
 (defn get-comments [post]
-  (sort-by :date (post :comments)))
+  (do
+    (log/info "get comments for post id " (post :id))
+    (sort-by :date 
+	     (map #(with-type :comment %)
+		  (ds/load-comments (post :id))))))
 
-(defn add-comment [post comment])
-  ; TODO
-  ;(dosync
-  ;   (let [id (:id post)
-  ;         post-in-ref (get-post id)]
-  ;    (alter posts assoc id
-  ;           (assoc post-in-ref :comments
-  ;                  (conj (:comments post-in-ref)
-  ;                        (make-comment post comment)))))))
+(defn add-comment [comment]
+  (do
+    (log/info "add comment: " comment)
+    (ds/store-comment (make-comment comment))))
 
 (defn db-watcher-status 
   "Note: not used"

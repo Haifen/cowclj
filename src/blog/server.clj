@@ -30,7 +30,10 @@
 
 (defroutes form-routes
   (POST "/admin/login"          (do-login (:username params) (:password params)))
-  (POST "/add-comment/:post-id" (:email params)))
+  (POST "/add-comment/:post-id" (apply do-add-comment
+				       (:post-id params)
+				       (ip request)
+				       (map params [:author :email :homepage :markdown]))))
 
 (defroutes admin-routes
   (GET "/admin/add-post"      (add-post-page))
@@ -88,7 +91,7 @@
 (decorate form-routes       with-session)
 (decorate admin-routes      with-layout admin-only with-session)
 (decorate admin-form-routes admin-only with-session)
-(decorate static-routes     with-mimetypes) ; short-circuit)  ; FIXME?
+(decorate static-routes     with-mimetypes short-circuit)  ; FIXME
 
 (defroutes all-routes
   admin-routes

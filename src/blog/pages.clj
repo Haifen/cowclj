@@ -68,11 +68,12 @@
 
 (defn do-add-comment [post-id ip author email homepage markdown]
   (if-let [post (get-post post-id)]
-   (do (add-comment post {:author (escape-html author)
-                          :email (escape-html email)
-                          :url (escape-html homepage)
-                          :markdown markdown
-                          :ip ip})
+   (do (add-comment {:post-id post-id
+		     :author (escape-html author)
+		     :email (escape-html email)
+		     :url (escape-html homepage)
+		     :markdown markdown
+		     :ip ip})
        [(flash-assoc :message "Comment added.")
         (redirect-to (url post))])
    (die "Can't find post " post-id)))
